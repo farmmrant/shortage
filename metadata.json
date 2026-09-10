@@ -1,0 +1,6 @@
+{
+  "name": "Feedmill Warehouse Raw Material Shortage Tracker",
+  "description": "Sistem monitoring data bulanan shortage bahan baku gudang feedmill lengkap dengan kuantitas, nominal kerugian rupiah, persentase susut, batch, sloc, dan grafik visualisasi.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
