@@ -3,6 +3,7 @@ import {
   Building2, 
   Calendar, 
   Download, 
+  FileSpreadsheet,
   Plus, 
   Printer, 
   RotateCcw,
@@ -14,6 +15,7 @@ interface NavbarProps {
   onMonthChange: (month: string) => void;
   availableMonths: { value: string; label: string }[];
   onOpenAddModal: () => void;
+  onOpenUploadExcel?: () => void;
   onExportCSV: () => void;
   onResetData: () => void;
   totalRecordsCount: number;
@@ -24,6 +26,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   onMonthChange,
   availableMonths,
   onOpenAddModal,
+  onOpenUploadExcel,
   onExportCSV,
   onResetData,
   totalRecordsCount,
@@ -100,6 +103,19 @@ export const Navbar: React.FC<NavbarProps> = ({
               <Download className="w-3.5 h-3.5 text-emerald-400" />
               <span>Export CSV</span>
             </button>
+
+            {/* Upload Excel */}
+            {onOpenUploadExcel && (
+              <button
+                id="btn-upload-excel-navbar"
+                onClick={onOpenUploadExcel}
+                title="Upload & Import data dari Excel"
+                className="flex items-center gap-1.5 px-3 py-2 text-xs font-medium bg-emerald-700/80 hover:bg-emerald-600 text-white border border-emerald-600/60 rounded-lg transition-colors cursor-pointer"
+              >
+                <FileSpreadsheet className="w-3.5 h-3.5 text-emerald-200" />
+                <span>Upload Excel</span>
+              </button>
+            )}
 
             {/* Reset Button */}
             <button

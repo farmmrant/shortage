@@ -5,6 +5,7 @@ import {
   ChevronUp, 
   Edit3, 
   Eye, 
+  FileSpreadsheet,
   Filter, 
   HelpCircle, 
   Search, 
@@ -27,6 +28,7 @@ interface ShortageTableProps {
   onDelete: (id: string) => void;
   onViewDetail: (record: ShortageRecord) => void;
   selectedMonthLabel: string;
+  onOpenUploadExcel?: () => void;
 }
 
 type SortField = 'tanggal' | 'materialDescription' | 'sloc' | 'batch' | 'qtyPenimbunan' | 'shortageQty' | 'shortagePercentage' | 'shortageAmount';
@@ -38,6 +40,7 @@ export const ShortageTable: React.FC<ShortageTableProps> = ({
   onDelete,
   onViewDetail,
   selectedMonthLabel,
+  onOpenUploadExcel,
 }) => {
   const [search, setSearch] = useState('');
   const [slocFilter, setSlocFilter] = useState('all');
@@ -124,14 +127,26 @@ export const ShortageTable: React.FC<ShortageTableProps> = ({
             </p>
           </div>
 
-          {/* Quick Stats Pill */}
-          <div className="flex items-center gap-2 text-xs">
+          {/* Quick Stats Pill & Excel Button */}
+          <div className="flex flex-wrap items-center gap-2 text-xs">
             <span className="px-2.5 py-1 bg-slate-200/80 rounded-md font-medium text-slate-700">
               Total Susut: <strong className="text-slate-900">{formatKg(tableSummary.totalShortage)}</strong>
             </span>
             <span className="px-2.5 py-1 bg-rose-100 rounded-md font-medium text-rose-800">
               Kerugian: <strong>{formatRupiah(tableSummary.totalAmount)}</strong>
             </span>
+            {onOpenUploadExcel && (
+              <button
+                id="btn-table-upload-excel"
+                type="button"
+                onClick={onOpenUploadExcel}
+                title="Impor data dari spreadsheet Excel"
+                className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-300 rounded-md font-semibold transition-colors cursor-pointer"
+              >
+                <FileSpreadsheet className="w-3.5 h-3.5 text-emerald-600" />
+                <span>Upload Excel</span>
+              </button>
+            )}
           </div>
         </div>
 

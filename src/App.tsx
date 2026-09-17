@@ -7,7 +7,9 @@ import { ShortageCharts } from './components/ShortageCharts';
 import { ShortageTable } from './components/ShortageTable';
 import { RecordModal } from './components/RecordModal';
 import { DetailModal } from './components/DetailModal';
+import { ExcelUploadModal } from './components/ExcelUploadModal';
 import { exportToCSV, formatDateIndo, formatKg, formatPercent, formatRupiah } from './utils/formatters';
+import { downloadExcelTemplate } from './utils/excelHelper';
 import { Info, Check, Sparkles } from 'lucide-react';
 
 const STORAGE_KEY = 'feedmill_shortage_data_v1';
@@ -43,6 +45,7 @@ export default function App() {
 
   // 3. Modal States
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isExcelModalOpen, setIsExcelModalOpen] = useState(false);
   const [editingRecord, setEditingRecord] = useState<ShortageRecord | null>(null);
   const [viewingRecord, setViewingRecord] = useState<ShortageRecord | null>(null);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
@@ -197,6 +200,23 @@ export default function App() {
     showToast(`Laporan CSV berhasil diunduh (${monthlyRecords.length} baris).`);
   };
 
+  // 9. Excel Import Handler
+  const handleImportExcel = (importedRecords: ShortageRecord[], mode: 'append' | 'replace') => {
+    if (mode === 'replace') {
+      setRecords(importedRecords);
+      if (importedRecords.length > 0) {
+        setSelectedMonth(importedRecords[0].bulan);
+      }
+      showToast(`Berhasil mengimpor ${importedRecords.length} data baru dari Excel (Mode Gantikan).`);
+    } else {
+      setRecords((prev) => [...importedRecords, ...prev]);
+      if (importedRecords.length > 0 && selectedMonth !== 'all') {
+        setSelectedMonth(importedRecords[0].bulan);
+      }
+      showToast(`Berhasil menambahkan ${importedRecords.length} data dari Excel.`);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-slate-100/70 text-slate-900 flex flex-col font-sans">
       
@@ -214,6 +234,7 @@ export default function App() {
         onMonthChange={setSelectedMonth}
         availableMonths={availableMonths}
         onOpenAddModal={handleOpenAddModal}
+        onOpenUploadExcel={() => setIsExcelModalOpen(true)}
         onExportCSV={handleExportCSV}
         onResetData={handleResetData}
         totalRecordsCount={records.length}
@@ -231,6 +252,8 @@ export default function App() {
             availableMonths={availableMonths}
             onMonthChange={setSelectedMonth}
             onOpenAddModal={handleOpenAddModal}
+            onOpenUploadExcel={() => setIsExcelModalOpen(true)}
+            onDownloadTemplate={downloadExcelTemplate}
             onExportCSV={handleExportCSV}
             onResetData={handleResetData}
             totalFilteredRecords={monthlyRecords.length}
@@ -265,6 +288,7 @@ export default function App() {
               onDelete={handleDeleteRecord}
               onViewDetail={handleViewDetail}
               selectedMonthLabel={selectedMonthLabel}
+              onOpenUploadExcel={() => setIsExcelModalOpen(true)}
             />
 
           </section>
@@ -288,6 +312,12 @@ export default function App() {
         record={viewingRecord}
         onClose={() => setViewingRecord(null)}
         onEdit={handleEditRecord}
+      />
+
+      <ExcelUploadModal
+        isOpen={isExcelModalOpen}
+        onClose={() => setIsExcelModalOpen(false)}
+        onImportComplete={handleImportExcel}
       />
 
       {/* Footer */}

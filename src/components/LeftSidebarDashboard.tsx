@@ -6,6 +6,7 @@ import {
   CheckCircle2, 
   Coins, 
   Download, 
+  FileSpreadsheet,
   Info, 
   Layers, 
   Plus, 
@@ -13,7 +14,8 @@ import {
   RotateCcw, 
   Scale, 
   ShieldAlert, 
-  SlidersHorizontal
+  SlidersHorizontal,
+  Upload
 } from 'lucide-react';
 import { MonthlySummary } from '../types';
 import { formatKg, formatNumber, formatPercent, formatRupiah } from '../utils/formatters';
@@ -25,6 +27,8 @@ interface LeftSidebarDashboardProps {
   availableMonths: { value: string; label: string }[];
   onMonthChange: (month: string) => void;
   onOpenAddModal: () => void;
+  onOpenUploadExcel: () => void;
+  onDownloadTemplate?: () => void;
   onExportCSV: () => void;
   onResetData: () => void;
   totalFilteredRecords: number;
@@ -37,6 +41,8 @@ export const LeftSidebarDashboard: React.FC<LeftSidebarDashboardProps> = ({
   availableMonths,
   onMonthChange,
   onOpenAddModal,
+  onOpenUploadExcel,
+  onDownloadTemplate,
   onExportCSV,
   onResetData,
   totalFilteredRecords,
@@ -72,17 +78,27 @@ export const LeftSidebarDashboard: React.FC<LeftSidebarDashboardProps> = ({
           </span>
         </div>
 
-        {/* Tombol Utama: Catat Shortage Baru */}
+        {/* Tombol Utama 1: Catat Shortage Baru */}
         <button
           id="btn-sidebar-add-record"
           onClick={onOpenAddModal}
-          className="w-full flex items-center justify-center gap-2 py-2.5 px-4 bg-amber-500 hover:bg-amber-600 active:bg-amber-700 text-slate-950 font-bold text-xs rounded-lg shadow-sm hover:shadow-amber-500/20 transition-all cursor-pointer mb-2.5"
+          className="w-full flex items-center justify-center gap-2 py-2.5 px-4 bg-amber-500 hover:bg-amber-600 active:bg-amber-700 text-slate-950 font-bold text-xs rounded-lg shadow-sm hover:shadow-amber-500/20 transition-all cursor-pointer mb-2"
         >
           <Plus className="w-4 h-4 stroke-[2.5]" />
           <span>+ Catat Shortage Baru</span>
         </button>
 
-        {/* Tombol Sekunder: Export, Print, Reset */}
+        {/* Tombol Utama 2: Upload Excel / Spreadsheet */}
+        <button
+          id="btn-sidebar-upload-excel"
+          onClick={onOpenUploadExcel}
+          className="w-full flex items-center justify-center gap-2 py-2 px-4 bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white font-bold text-xs rounded-lg shadow-sm hover:shadow-emerald-600/20 transition-all cursor-pointer mb-2.5"
+        >
+          <FileSpreadsheet className="w-4 h-4" />
+          <span>Upload File Excel (.xlsx)</span>
+        </button>
+
+        {/* Tombol Sekunder: Export, Print */}
         <div className="grid grid-cols-2 gap-2">
           <button
             id="btn-sidebar-export-csv"
@@ -105,13 +121,25 @@ export const LeftSidebarDashboard: React.FC<LeftSidebarDashboardProps> = ({
           </button>
         </div>
 
-        {/* Reset Data */}
-        <div className="pt-2.5 mt-2.5 border-t border-slate-100 flex items-center justify-between">
-          <span className="text-[11px] text-slate-400">Data Feedmill Asli</span>
+        {/* Template & Reset Data */}
+        <div className="pt-2.5 mt-2.5 border-t border-slate-100 flex items-center justify-between text-[11px]">
+          {onDownloadTemplate ? (
+            <button
+              id="btn-sidebar-download-template"
+              onClick={onDownloadTemplate}
+              className="inline-flex items-center gap-1 text-slate-500 hover:text-amber-700 transition-colors cursor-pointer"
+            >
+              <Download className="w-3 h-3 text-amber-600" />
+              <span>Unduh Format Excel</span>
+            </button>
+          ) : (
+            <span className="text-slate-400">Feedmill Storage</span>
+          )}
+
           <button
             id="btn-sidebar-reset"
             onClick={onResetData}
-            className="inline-flex items-center gap-1 text-[11px] text-slate-500 hover:text-rose-600 transition-colors cursor-pointer"
+            className="inline-flex items-center gap-1 text-slate-500 hover:text-rose-600 transition-colors cursor-pointer"
           >
             <RotateCcw className="w-3 h-3" />
             <span>Reset Sample</span>
