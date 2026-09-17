@@ -207,7 +207,7 @@ export const LeftSidebarDashboard: React.FC<LeftSidebarDashboardProps> = ({
         {/* KPI 2: Total Shortage Qty */}
         <div className="p-3 rounded-lg bg-amber-50/50 border border-amber-200/60">
           <div className="flex items-center justify-between text-slate-500 text-[11px] font-medium mb-1">
-            <span className="text-amber-900 font-semibold">Total Shortage Qty</span>
+            <span className="text-amber-900 font-semibold">Total Shortage Qty (Kg)</span>
             <Scale className="w-3.5 h-3.5 text-amber-600" />
           </div>
           <div className="text-lg font-bold text-amber-950 tracking-tight flex items-baseline justify-between">
@@ -218,7 +218,7 @@ export const LeftSidebarDashboard: React.FC<LeftSidebarDashboardProps> = ({
           </div>
           <div className="flex items-center gap-1 text-[11px] text-amber-800/80 mt-1">
             <ArrowDownRight className="w-3 h-3 text-amber-600" />
-            <span>Susut aerasi, timbang & handling</span>
+            <span>Keterangan: Selisih susut fisik timbang vs penimbunan</span>
           </div>
         </div>
 
@@ -239,7 +239,7 @@ export const LeftSidebarDashboard: React.FC<LeftSidebarDashboardProps> = ({
         {/* KPI 4: Rata-Rata Shortage (%) */}
         <div className="p-3 rounded-lg bg-slate-50/80 border border-slate-200/70">
           <div className="flex items-center justify-between text-slate-500 text-[11px] font-medium mb-1">
-            <span>Rata-Rata Shortage (%)</span>
+            <span className="font-semibold text-slate-700">Rata-Rata Shortage (%)</span>
             {isNormal ? (
               <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
             ) : isWarning ? (
@@ -261,6 +261,9 @@ export const LeftSidebarDashboard: React.FC<LeftSidebarDashboardProps> = ({
             }`}>
               {isNormal ? 'Aman (≤ 0.35%)' : isWarning ? 'Perhatian' : 'Kritis (> 0.8%)'}
             </span>
+          </div>
+          <div className="text-[10px] text-slate-500 mt-1 font-mono">
+            Rumus: (Total Susut ÷ Total Timbang) × 100%
           </div>
 
           {/* Breakdown Status Bar */}
@@ -298,15 +301,25 @@ export const LeftSidebarDashboard: React.FC<LeftSidebarDashboardProps> = ({
       </div>
 
       {/* 4. QC STANDARD & SOP NOTICE */}
-      <div className="bg-slate-50 rounded-xl p-3.5 border border-slate-200 text-slate-600 text-xs">
+      <div className="bg-slate-50 rounded-xl p-3.5 border border-slate-200 text-slate-600 text-xs space-y-2">
         <div className="flex items-start gap-2">
           <Info className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
           <div className="text-[11px] leading-relaxed">
-            <p className="font-semibold text-slate-800 mb-0.5">Standar Toleransi Feedmill:</p>
+            <p className="font-semibold text-slate-800 mb-0.5">Keterangan Shortage Qty (Kg):</p>
             <p className="text-slate-600">
-              Maksimal susut standar <strong>≤ 0.35%</strong>. Batch di atas <strong>0.80%</strong> memerlukan investigasi fisik silo & kalibrasi jembatan timbang.
+              Selisih berat timbangan penerimaan bahan baku vs hasil penimbunan di silo/gudang feedmill (susut aerasi, debu siklon, atau handling).
             </p>
           </div>
+        </div>
+
+        <div className="pt-2 border-t border-slate-200 text-[11px]">
+          <p className="font-semibold text-slate-800 mb-1">Rumus Hitung Shortage (%):</p>
+          <code className="block bg-white p-1.5 rounded border border-amber-200 text-amber-900 font-mono text-[10.5px]">
+            (Shortage Qty ÷ Qty Penimbunan) × 100%
+          </code>
+          <p className="mt-1 text-slate-500 text-[10px]">
+            Toleransi: Normal ≤ 0.35% • Perhatian 0.36%-0.8% • Kritis &gt; 0.8%
+          </p>
         </div>
       </div>
 

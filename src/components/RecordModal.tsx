@@ -315,12 +315,17 @@ export const RecordModal: React.FC<RecordModalProps> = ({
                   required
                   className="w-full px-3 py-2 text-xs border border-slate-300 rounded-lg focus:ring-2 focus:ring-amber-500 font-semibold text-slate-900"
                 />
+                <span className="text-[10px] text-slate-500 mt-1 block">
+                  Total kuantitas timbangan penerimaan
+                </span>
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-slate-700 mb-1">
-                  Shortage Qty (Kg) *
-                </label>
+                <div className="flex items-center justify-between mb-1">
+                  <label className="block text-xs font-medium text-slate-700">
+                    Shortage Qty (Kg) *
+                  </label>
+                </div>
                 <input
                   id="input-shortage-qty"
                   type="number"
@@ -332,6 +337,9 @@ export const RecordModal: React.FC<RecordModalProps> = ({
                   required
                   className="w-full px-3 py-2 text-xs border border-slate-300 rounded-lg focus:ring-2 focus:ring-amber-500 font-semibold text-slate-900"
                 />
+                <span className="text-[10px] text-amber-800 font-medium mt-1 block">
+                  Keterangan: Selisih susut fisik timbang vs silo/gudang
+                </span>
               </div>
 
               <div>
@@ -348,13 +356,45 @@ export const RecordModal: React.FC<RecordModalProps> = ({
                   onChange={(e) => setUnitPrice(e.target.value ? parseFloat(e.target.value) : '')}
                   className="w-full px-3 py-2 text-xs border border-slate-300 rounded-lg focus:ring-2 focus:ring-amber-500 text-slate-900"
                 />
+                <span className="text-[10px] text-slate-500 mt-1 block">
+                  Harga beli standar per kilogram
+                </span>
+              </div>
+            </div>
+
+            {/* Kotak Perhitungan Rumus Shortage (%) */}
+            <div className="p-3 bg-amber-500/10 border border-amber-500/30 rounded-lg space-y-2">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 text-xs text-amber-950 font-semibold">
+                <span className="flex items-center gap-1.5">
+                  <Calculator className="w-3.5 h-3.5 text-amber-700 shrink-0" />
+                  <span>Rumus Hitung Shortage (%):</span>
+                  <code className="bg-white/80 px-2 py-0.5 rounded text-amber-900 font-mono text-[11px] border border-amber-300">
+                    (Shortage Qty ÷ Qty Penimbunan) × 100%
+                  </code>
+                </span>
+                <span className="text-[11px] text-amber-800 font-normal">
+                  Keterangan: Standar toleransi feedmill ≤ 0.35%
+                </span>
+              </div>
+
+              {/* Rincian Angka Riil */}
+              <div className="flex flex-wrap items-center gap-2 text-xs font-mono bg-white p-2 rounded border border-amber-200 text-slate-800">
+                <span className="text-slate-500 font-sans text-[11px]">Langkah Hitung:</span>
+                <span>(</span>
+                <span className="font-bold text-amber-900">{formatKg(shortageNum)}</span>
+                <span className="text-slate-400">÷</span>
+                <span className="font-bold text-blue-900">{formatKg(penimbunanNum)}</span>
+                <span>) × 100% =</span>
+                <span className="font-bold text-base text-slate-950 underline decoration-amber-500 decoration-2">
+                  {formatPercent(calculatedPercentage)}
+                </span>
               </div>
             </div>
 
             {/* Live Auto Calculation Banner */}
-            <div className="grid grid-cols-2 gap-3 pt-2 border-t border-slate-200">
+            <div className="grid grid-cols-2 gap-3 pt-1">
               <div className="bg-white p-2.5 rounded-lg border border-slate-200">
-                <span className="text-[11px] text-slate-500 block">Shortage (%) Terhitung:</span>
+                <span className="text-[11px] text-slate-500 block">Hasil Hitung Shortage (%):</span>
                 <div className="flex items-center gap-2 mt-0.5">
                   <span className="text-base font-bold text-slate-900">
                     {formatPercent(calculatedPercentage)}
@@ -372,7 +412,7 @@ export const RecordModal: React.FC<RecordModalProps> = ({
               </div>
 
               <div className="bg-white p-2.5 rounded-lg border border-slate-200">
-                <span className="text-[11px] text-slate-500 block">Shortage Amount (Rp):</span>
+                <span className="text-[11px] text-slate-500 block">Total Kerugian / Amount (Rp):</span>
                 <span className="text-base font-bold text-rose-600 block mt-0.5">
                   {formatRupiah(calculatedAmount)}
                 </span>

@@ -1,5 +1,5 @@
 import React from 'react';
-import { X, CheckCircle2, AlertTriangle, ShieldAlert, Printer, Warehouse, Calendar, Tag, Layers, Scale, DollarSign } from 'lucide-react';
+import { X, CheckCircle2, AlertTriangle, ShieldAlert, Printer, Warehouse, Calendar, Tag, Layers, Scale, DollarSign, Calculator, Info } from 'lucide-react';
 import { ShortageRecord } from '../types';
 import { formatDateIndo, formatKg, formatNumber, formatPercent, formatRupiah } from '../utils/formatters';
 
@@ -136,10 +136,47 @@ export const DetailModal: React.FC<DetailModalProps> = ({ record, onClose, onEdi
             </div>
 
             <div className="p-2.5 bg-rose-50/70 border border-rose-200 rounded-xl">
-              <span className="text-[11px] text-rose-700 font-medium block">Persentase</span>
+              <span className="text-[11px] text-rose-700 font-medium block">Shortage (%)</span>
               <span className="text-sm font-bold text-rose-900 block mt-1">
                 {formatPercent(record.shortagePercentage)}
               </span>
+            </div>
+          </div>
+
+          {/* Keterangan Shortage Qty & Rumus Perhitungan Shortage (%) */}
+          <div className="p-3 bg-amber-50 border border-amber-200 rounded-xl space-y-2 text-xs">
+            <div className="flex items-start gap-2">
+              <Info className="w-4 h-4 text-amber-700 shrink-0 mt-0.5" />
+              <div>
+                <span className="font-semibold text-amber-950 block">Keterangan Shortage Qty (Kg):</span>
+                <p className="text-slate-600 text-[11px] leading-relaxed">
+                  Selisih susut fisik kuantitas bahan baku antara timbangan penerimaan dan hasil penimbunan di silo/gudang (akibat debu siklon, susut penguapan kadar air aerasi, atau penanganan material).
+                </p>
+              </div>
+            </div>
+
+            <div className="pt-2 border-t border-amber-200/80">
+              <div className="flex items-center justify-between text-amber-950 font-semibold mb-1">
+                <span className="flex items-center gap-1.5">
+                  <Calculator className="w-3.5 h-3.5 text-amber-700" />
+                  <span>Rumus & Hitung Shortage (%):</span>
+                </span>
+                <code className="text-[11px] bg-white px-1.5 py-0.5 rounded border border-amber-300 text-amber-900 font-mono">
+                  (Shortage Qty ÷ Qty Penimbunan) × 100%
+                </code>
+              </div>
+
+              <div className="bg-white p-2 rounded border border-amber-200 font-mono text-[11px] text-slate-800 flex items-center gap-1.5">
+                <span className="font-sans text-slate-500 text-[10px]">Kalkulasi:</span>
+                <span>(</span>
+                <span className="font-bold text-amber-900">{formatKg(record.shortageQty)}</span>
+                <span className="text-slate-400">÷</span>
+                <span className="font-bold text-blue-900">{formatKg(record.qtyPenimbunan)}</span>
+                <span>) × 100% =</span>
+                <span className="font-bold text-xs text-rose-700 underline decoration-amber-500">
+                  {formatPercent(record.shortagePercentage)}
+                </span>
+              </div>
             </div>
           </div>
 

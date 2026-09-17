@@ -11,7 +11,9 @@ import {
   Search, 
   Trash2, 
   AlertCircle,
-  Warehouse
+  Warehouse,
+  Calculator,
+  Info
 } from 'lucide-react';
 import { ShortageRecord } from '../types';
 import { 
@@ -197,8 +199,25 @@ export const ShortageTable: React.FC<ShortageTableProps> = ({
               <option value="critical">Kritis (&gt; 0.8%)</option>
             </select>
           </div>
-
         </div>
+
+        {/* Keterangan Shortage Qty & Rumus Hitung Shortage (%) */}
+        <div className="mt-3 pt-2.5 border-t border-slate-200/80 flex flex-col md:flex-row md:items-center justify-between gap-2 text-[11px] text-slate-600 bg-slate-50/70 p-2.5 rounded-lg border border-slate-200">
+          <div className="flex items-center gap-1.5 text-slate-700">
+            <Info className="w-3.5 h-3.5 text-amber-600 shrink-0" />
+            <span>
+              <strong>Keterangan Shortage Qty (Kg):</strong> Selisih susut fisik antara berat timbang penerimaan vs hasil penimbunan di silo/gudang feedmill.
+            </span>
+          </div>
+          <div className="flex items-center gap-1.5 bg-white px-2.5 py-1 rounded border border-amber-200 text-amber-950 font-medium shrink-0">
+            <Calculator className="w-3.5 h-3.5 text-amber-600 shrink-0" />
+            <span>Rumus:</span>
+            <code className="font-mono text-amber-900 font-bold bg-amber-50 px-1 py-0.5 rounded">
+              (Shortage Qty ÷ Qty Penimbunan) × 100%
+            </code>
+          </div>
+        </div>
+
       </div>
 
       {/* Table Content */}
@@ -261,6 +280,7 @@ export const ShortageTable: React.FC<ShortageTableProps> = ({
               <th 
                 onClick={() => handleSort('qtyPenimbunan')}
                 className="py-3 px-3.5 text-right cursor-pointer hover:bg-slate-200/70 transition-colors whitespace-nowrap"
+                title="Total kuantitas timbangan penerimaan bahan baku"
               >
                 <div className="flex items-center justify-end gap-1">
                   <span>Qty Penimbunan (Kg)</span>
@@ -271,29 +291,38 @@ export const ShortageTable: React.FC<ShortageTableProps> = ({
               {/* Shortage Qty (Kg) */}
               <th 
                 onClick={() => handleSort('shortageQty')}
-                className="py-3 px-3.5 text-right cursor-pointer hover:bg-slate-200/70 transition-colors whitespace-nowrap"
+                className="py-3 px-3.5 text-right cursor-pointer hover:bg-slate-200/70 transition-colors whitespace-nowrap bg-amber-50/40"
+                title="Keterangan: Selisih susut fisik kuantitas penerimaan vs penimbunan di silo/gudang"
               >
-                <div className="flex items-center justify-end gap-1">
+                <div className="flex items-center justify-end gap-1 text-amber-950 font-bold">
                   <span>Shortage Qty (Kg)</span>
-                  <ArrowUpDown className="w-3 h-3 text-slate-400" />
+                  <ArrowUpDown className="w-3 h-3 text-amber-600" />
                 </div>
+                <span className="text-[9px] text-amber-700 font-normal block">
+                  (Susut Fisik)
+                </span>
               </th>
 
               {/* Shortage (%) */}
               <th 
                 onClick={() => handleSort('shortagePercentage')}
-                className="py-3 px-3.5 text-center cursor-pointer hover:bg-slate-200/70 transition-colors whitespace-nowrap"
+                className="py-3 px-3.5 text-center cursor-pointer hover:bg-slate-200/70 transition-colors whitespace-nowrap bg-amber-50/40"
+                title="Rumus: (Shortage Qty ÷ Qty Penimbunan) × 100%"
               >
-                <div className="flex items-center justify-center gap-1">
+                <div className="flex items-center justify-center gap-1 text-amber-950 font-bold">
                   <span>Shortage (%)</span>
-                  <ArrowUpDown className="w-3 h-3 text-slate-400" />
+                  <ArrowUpDown className="w-3 h-3 text-amber-600" />
                 </div>
+                <span className="text-[9px] text-blue-700 font-mono font-medium block">
+                  (Kg ÷ Penimbunan) × 100%
+                </span>
               </th>
 
               {/* Shortage Amount (Rp) */}
               <th 
                 onClick={() => handleSort('shortageAmount')}
                 className="py-3 px-3.5 text-right cursor-pointer hover:bg-slate-200/70 transition-colors whitespace-nowrap"
+                title="Shortage Amount = Shortage Qty × Estimasi Harga Beli Satuan"
               >
                 <div className="flex items-center justify-end gap-1">
                   <span>Shortage Amount (Rp)</span>
@@ -393,13 +422,19 @@ export const ShortageTable: React.FC<ShortageTableProps> = ({
                     </td>
 
                     {/* Shortage Qty (Kg) */}
-                    <td className="py-2.5 px-3.5 text-right whitespace-nowrap font-bold text-slate-900">
+                    <td 
+                      className="py-2.5 px-3.5 text-right whitespace-nowrap font-bold text-slate-900 bg-amber-50/20"
+                      title={`Shortage Qty: ${formatKg(item.shortageQty)} susut fisik timbangan`}
+                    >
                       {formatNumber(item.shortageQty)}
                     </td>
 
                     {/* Shortage (%) */}
-                    <td className="py-2.5 px-3.5 text-center whitespace-nowrap">
-                      <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-bold ${
+                    <td 
+                      className="py-2.5 px-3.5 text-center whitespace-nowrap bg-amber-50/20"
+                      title={`Hitung Shortage (%): (${formatKg(item.shortageQty)} ÷ ${formatKg(item.qtyPenimbunan)}) × 100% = ${formatPercent(item.shortagePercentage)}`}
+                    >
+                      <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-bold cursor-help ${
                         isCritical
                           ? 'bg-rose-100 text-rose-800 border border-rose-200'
                           : isWarning
